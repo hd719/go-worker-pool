@@ -24,10 +24,13 @@ func main() {
 	// Start the worker pool
 	wp.Run()
 
-	// Create 4 videos to send to the worker pool
-	
+	// Create 1 video to send to the worker pool
+	video := wp.NewVideo(1, "./input/pupp1.mp4", "./output", "mp4", notifyChan, nil)
 
 	// Send the videos to the worker pool
+	videoQueue <- streamer.VideoProcessingJob{
+		Video: video,
+	}
 
 	// Print out the results
 }
