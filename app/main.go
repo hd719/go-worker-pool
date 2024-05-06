@@ -26,7 +26,7 @@ func main() {
 	_, _ = fmt.Scanln()
 
 	// Create 1 video to send to the worker pool
-	video := wp.NewVideo(1, "./input/pupp1.mp4", "./output", "mp4", notifyChan, nil)
+	video := wp.NewVideo(1, "./input/puppy1.mp4", "./output", "mp4", notifyChan, nil)
 
 	// Send the videos to the worker pool
 	videoQueue <- streamer.VideoProcessingJob{

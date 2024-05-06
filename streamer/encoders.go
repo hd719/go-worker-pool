@@ -20,7 +20,7 @@ func (ve *VideoEncoder) EncodeToMP4(v *Video, baseFileName string) error {
 	trans := new(transcoder.Transcoder)
 
 	// Build the output path
-	outputPath := fmt.Sprintf("%s/%s", v.OutputDir, baseFileName)
+	outputPath := fmt.Sprintf("%s/%s.mp4", v.OutputDir, baseFileName)
 
 	// Initialize the transcoder
 	err := trans.Initialize(v.InputFile, outputPath)
