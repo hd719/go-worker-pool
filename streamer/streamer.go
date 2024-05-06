@@ -8,7 +8,7 @@ type ProcessingMessage struct {
 }
 
 // This will hold the unit of work that we want our worker pool to perform
-// We wrap this type around a Video, which has all the information we need about the input source and what we want the output to look like
+// We wrap this type around a Video, which has all the information we need about the input source and what we want the output to look like()
 type VideoProcessingJob struct {
 	Video Video
 }
@@ -27,6 +27,10 @@ type Video struct {
 	NotifyChan chan ProcessingMessage // Where are we going to send the processed video to
 	// Options *VideoOptions
 	Encoder Processor
+}
+
+func (v *Video) encode() {
+
 }
 
 func New(jobQueue chan VideoProcessingJob, maxWorkers int) *VideoDispatcher {
