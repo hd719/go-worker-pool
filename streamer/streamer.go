@@ -5,6 +5,8 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/tsawler/toolbox"
 )
 
 type ProcessingMessage struct {
@@ -106,7 +108,8 @@ func (v *Video) encodeToMp4() (string, error) {
 		b := path.Base(v.InputFile)
 		baseFileName = strings.TrimSuffix(b, filepath.Ext(b)) // ex. cat.mp4 becomes cat
 	} else {
-		// Todo: generate random file name
+		var t toolbox.Tools
+		baseFileName = t.RandomString(10)
 	}
 
 	// Encode
@@ -127,7 +130,8 @@ func (v *Video) encodeToHLS() (string, error) {
 		b := path.Base(v.InputFile)
 		baseFileName = strings.TrimSuffix(b, filepath.Ext(b)) // ex. cat.mp4 becomes cat
 	} else {
-		// Todo: generate random file name
+		var t toolbox.Tools
+		baseFileName = t.RandomString(10)
 	}
 
 	// Encode
