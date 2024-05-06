@@ -7,8 +7,8 @@ import (
 
 func main() {
 	// Define number of workers and jobs
-	const numJobs = 1
-	const numWorkers = 2
+	const numJobs = 4
+	const numWorkers = 4
 
 	// Create 2 channels for work and results (1. notifications and 2. We send work to)
 	notifyChan := make(chan streamer.ProcessingMessage, numJobs)
@@ -33,12 +33,31 @@ func main() {
 		MaxRate720p:     "600k",
 		MaxRate480p:     "400k",
 	}
-	video := wp.NewVideo(1, "./input/puppy1.mp4", "./output", "hls", notifyChan, ops)
-	// video := wp.NewVideo(1, "./input/puppy1.mp4", "./output", "mp4", notifyChan, ops)
+
+	// Create a video that converts mp4 to web ready format.
+	video1 := wp.NewVideo(1, "./input/puppy1.mp4", "./output", "mp4", notifyChan, nil)
+
+	// Create second video that should fail.
+	video2 := wp.NewVideo(2, "./input/bad.txt", "./output", "mp4", notifyChan, nil)
+
+	// Create a third video that should convert mp4 to hls
+	video3 := wp.NewVideo(3, "./input/puppy2.mp4", "./output", "hls", notifyChan, ops)
+
+	// Create a fourth video that should convert mp4 to hls
+	video4 := wp.NewVideo(4, "./input/puppy2.mp4", "./output", "mp4", notifyChan, nil)
 
 	// Send the videos to the worker pool
 	videoQueue <- streamer.VideoProcessingJob{
-		Video: video,
+		Video: video1,
+	}
+	videoQueue <- streamer.VideoProcessingJob{
+		Video: video2,
+	}
+	videoQueue <- streamer.VideoProcessingJob{
+		Video: video3,
+	}
+	videoQueue <- streamer.VideoProcessingJob{
+		Video: video4,
 	}
 
 	// Print out the results
