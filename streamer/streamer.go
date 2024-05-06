@@ -77,6 +77,15 @@ func (v *Video) encode() {
 			v.sendToNotifyChan(false, "", fmt.Sprintf("encode failed for %d %s", v.ID, err.Error()))
 		}
 		fileName = fmt.Sprintf("%s.mp4", name)
+	case "hls":
+		fmt.Println("v.encode(): About to encode to mp4", v.ID)
+		// encode the video
+		name, err := v.encodeToHLS()
+		if err != nil {
+			// send info to notify chan
+			v.sendToNotifyChan(false, "", fmt.Sprintf("encode failed for %d %s", v.ID, err.Error()))
+		}
+		fileName = fmt.Sprintf("%s.m3u8", name)
 
 	default:
 		fmt.Println("v.encode(): error trying to encode video", v.ID)
@@ -106,6 +115,27 @@ func (v *Video) encodeToMp4() (string, error) {
 		return "", err
 	}
 	fmt.Println("v.encodeToMp4: successfully encoded video id", v.ID)
+
+	return baseFileName, nil
+}
+
+func (v *Video) encodeToHLS() (string, error) {
+	baseFileName := ""
+
+	if !v.Options.RenameOutput {
+		// Get the base filename
+		b := path.Base(v.InputFile)
+		baseFileName = strings.TrimSuffix(b, filepath.Ext(b)) // ex. cat.mp4 becomes cat
+	} else {
+		// Todo: generate random file name
+	}
+
+	// Encode
+	err := v.Encoder.Engine.EncodeToHLS(v, baseFileName)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("v.encodeToHLS: successfully encoded video id", v.ID)
 
 	return baseFileName, nil
 }

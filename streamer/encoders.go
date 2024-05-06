@@ -9,6 +9,7 @@ import (
 // Encoder is an interface for encoding video, any type that wants to satisfy this interface must implement all its methods
 type Encoder interface {
 	EncodeToMP4(v *Video, baseFileName string) error
+	EncodeToHLS(v *Video, baseFileName string) error
 }
 
 // VideoEncoder is a type which satisfies the Encoder interface because it implements all the methods specified in Encoder
@@ -40,5 +41,9 @@ func (ve *VideoEncoder) EncodeToMP4(v *Video, baseFileName string) error {
 		return err
 	}
 
+	return nil
+}
+
+func (vd *VideoEncoder) EncodeToHLS(v *Video, baseFileName string) error {
 	return nil
 }
