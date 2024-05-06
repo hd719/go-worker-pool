@@ -20,24 +20,52 @@ type Processor struct {
 }
 
 type Video struct {
-	ID         int
-	InputFile  string // the video we want to encode
-	OutputDir  string // where we want the encoded video to show up
-	Type       string
-	NotifyChan chan ProcessingMessage // Where are we going to send the processed video to
-	// Options *VideoOptions
-	Encoder Processor
+	ID           int
+	InputFile    string // the video we want to encode
+	OutputDir    string // where we want the encoded video to show up
+	Type         string
+	NotifyChan   chan ProcessingMessage // Where are we going to send the processed video to
+	Options      *VideoOptions
+	Encoder      Processor
+	EncodingType string
+}
+
+type VideoOptions struct {
+	RenameOutput    bool
+	SegmentDuration int
+	MaxRate1080p    string
+	MaxRate720p     string
+	MaxRate480p     string
+}
+
+func (vd *VideoDispatcher) NewVideo(id int, input string, output string, encType string, notifyChan chan ProcessingMessage, options *VideoOptions) Video {
+	if options == nil {
+		options = &VideoOptions{}
+	}
+
+	return Video{
+		ID:           id,
+		InputFile:    input,
+		OutputDir:    output,
+		EncodingType: encType,
+		NotifyChan:   notifyChan,
+		Encoder:      vd.Processor,
+		Options:      options,
+	}
 }
 
 func (v *Video) encode() {
-
 }
 
+// New creates and returns a new worker pool
 func New(jobQueue chan VideoProcessingJob, maxWorkers int) *VideoDispatcher {
 	workerPool := make(chan chan VideoProcessingJob, maxWorkers)
 
 	// Todo: implement processor logic
-	p := Processor{}
+	var e VideoEncoder
+	p := Processor{
+		Engine: &e,
+	}
 
 	return &VideoDispatcher{
 		jobQueue:   jobQueue,

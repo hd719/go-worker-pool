@@ -22,8 +22,10 @@ func main() {
 	fmt.Println("wp", wp)
 
 	// Start the worker pool
+	wp.Run()
 
 	// Create 4 videos to send to the worker pool
+	
 
 	// Send the videos to the worker pool
 
