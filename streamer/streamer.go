@@ -8,12 +8,15 @@ type ProcessingMessage struct {
 }
 
 // This will hold the unit of work that we want our worker pool to perform
+// We wrap this type around a Video, which has all the information we need about the input source and what we want the output to look like
 type VideoProcessingJob struct {
 	Video Video
 }
 
 // This will return the format of the data we need (ex. convert mp4 into a web mp4)
+// Does the actually processing
 type Processor struct {
+	Engine Encoder
 }
 
 type Video struct {
