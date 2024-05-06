@@ -7,10 +7,10 @@ import (
 
 func main() {
 	// Define number of workers and jobs
-	const numJobs = 4
+	const numJobs = 1
 	const numWorkers = 2
 
-	// Create channels for work and results
+	// Create 2 channels for work and results (1. notifications and 2. We send work to)
 	notifyChan := make(chan streamer.ProcessingMessage, numJobs)
 	defer close(notifyChan)
 
@@ -19,10 +19,11 @@ func main() {
 
 	// Get a worker pool
 	wp := streamer.New(videoQueue, numWorkers)
-	fmt.Println("wp", wp)
 
 	// Start the worker pool
 	wp.Run()
+	fmt.Println("Worker Pool Started. Press enter to continue")
+	_, _ = fmt.Scanln()
 
 	// Create 1 video to send to the worker pool
 	video := wp.NewVideo(1, "./input/pupp1.mp4", "./output", "mp4", notifyChan, nil)
@@ -33,4 +34,10 @@ func main() {
 	}
 
 	// Print out the results
+	for i := 1; i <= numJobs; i++ {
+		msg := <-notifyChan
+		fmt.Println("i:", i, "/", "message:", msg)
+	}
+
+	fmt.Println("Done")
 }

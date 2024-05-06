@@ -1,5 +1,7 @@
 package streamer
 
+import "fmt"
+
 // Worker Pool
 type VideoDispatcher struct {
 	WorkerPool chan chan VideoProcessingJob // channel of channels, enables 2 way communication within a channel
@@ -17,6 +19,7 @@ type videoWorker struct {
 
 // newVideoWorker
 func newVideoWorker(id int, workerPool chan chan VideoProcessingJob) videoWorker {
+	fmt.Println("newVideoWorker: Creating video worker id", id)
 	return videoWorker{
 		id:         id,
 		jobQueue:   make(chan VideoProcessingJob),
@@ -27,6 +30,7 @@ func newVideoWorker(id int, workerPool chan chan VideoProcessingJob) videoWorker
 // start()
 // Anytime start is called it calls an individual worker as a goroutine which executes forever
 func (w videoWorker) start() {
+	fmt.Println("w.Start(): Starting worker id", w.id)
 	go func() {
 		for {
 			// Add jobQueue to the worker pool
@@ -43,7 +47,9 @@ func (w videoWorker) start() {
 
 // run()
 func (vd *VideoDispatcher) Run() {
+	fmt.Println("vd.Run(): Starting worker pool by running workers")
 	for i := 0; i < vd.maxWorkers; i++ {
+		fmt.Println("vd.Run(): starting worker id", i+1)
 		worker := newVideoWorker(i+1, vd.WorkerPool)
 		worker.start()
 	}
@@ -57,6 +63,8 @@ func (vd *VideoDispatcher) dispatch() {
 		// Wait for a job to come in
 		job := <-vd.jobQueue
 
+		fmt.Println("vd.dispatch(): sending", job.Video.ID, "to worker job queue")
+
 		go func() {
 			workerJobQueue := <-vd.WorkerPool
 			workerJobQueue <- job
@@ -66,5 +74,6 @@ func (vd *VideoDispatcher) dispatch() {
 
 // processVideoJob
 func (w *videoWorker) processVideoJob(video Video) {
+	fmt.Println("w.processVideoJob(): staring encode on video", video.ID)
 	video.encode()
 }
